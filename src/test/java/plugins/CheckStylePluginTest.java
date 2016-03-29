@@ -1,7 +1,10 @@
 package plugins;
 
+import java.io.IOException;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import javax.inject.Inject;
 
 import org.jenkinsci.test.acceptance.junit.SmokeTest;
 import org.jenkinsci.test.acceptance.junit.WithPlugins;
@@ -22,7 +25,7 @@ import org.jenkinsci.test.acceptance.po.Job;
 import org.jenkinsci.test.acceptance.po.ListView;
 import org.jenkinsci.test.acceptance.po.Node;
 import org.jenkinsci.test.acceptance.po.PageObject;
-import org.junit.Assume;
+import org.jenkinsci.test.acceptance.utils.JenkinsUtil;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.jvnet.hudson.test.Issue;
@@ -32,7 +35,6 @@ import org.openqa.selenium.WebElement;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.jenkinsci.test.acceptance.Matchers.*;
-
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -50,6 +52,9 @@ public class CheckStylePluginTest extends AbstractAnalysisTest<CheckStyleAction>
     private static final String FILE_FOR_2ND_RUN = CHECKSTYLE_PLUGIN_ROOT + "forSecondRun/checkstyle-result.xml";
     private static final int TOTAL_NUMBER_OF_WARNINGS = 776;
 
+    @Inject
+    private JenkinsUtil jenkinsUtil;
+    
     @Override
     protected CheckStyleAction createProjectAction(final FreeStyleJob job) {
         return new CheckStyleAction(job);
@@ -248,8 +253,8 @@ public class CheckStylePluginTest extends AbstractAnalysisTest<CheckStyleAction>
      * pages should then show the same results (see JENKINS-24940).
      */
     @Test @Issue("24940")
-    public void should_report_new_and_fixed_warnings_in_consecutive_builds() {
-        assumeTrue("This test requires a restartable Jenkins", jenkins.canRestart());
+    public void should_report_new_and_fixed_warnings_in_consecutive_builds() throws IOException {
+        assumeTrue("This test requires a restartable Jenkins", jenkinsUtil.canRestart());
         FreeStyleJob job = createFreeStyleJob();
         Build firstBuild = buildJobAndWait(job);
         editJob(FILE_FOR_2ND_RUN, false, job);
@@ -263,7 +268,7 @@ public class CheckStylePluginTest extends AbstractAnalysisTest<CheckStyleAction>
         verifyWarningCounts(lastBuild);
 
         firstBuild.delete();
-        jenkins.restart();
+        jenkinsUtil.restart();
         lastBuild.open();
 
         verifyWarningCounts(lastBuild);

@@ -9,6 +9,7 @@ import org.jenkinsci.test.acceptance.po.Plugin;
 import org.jenkinsci.test.acceptance.po.PluginManager;
 import org.jenkinsci.test.acceptance.po.PluginManager.PluginSpec;
 import org.jenkinsci.test.acceptance.update_center.UpdateCenterMetadata.UnableToResolveDependencies;
+import org.jenkinsci.test.acceptance.utils.JenkinsUtil;
 import org.jenkinsci.test.acceptance.utils.pluginreporter.ExercisedPluginsReporter;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.rules.TestRule;
@@ -80,6 +81,9 @@ public @interface WithPlugins {
 
         @Inject(optional=true) @Named("neverReplaceExistingPlugins")
         boolean neverReplaceExistingPlugins;
+        
+        @Inject
+        private JenkinsUtil jenkinsUtil;
 
         @Override
         public Statement apply(final Statement base, final Description d) {
@@ -93,8 +97,8 @@ public @interface WithPlugins {
                     restartRequired |= installPlugins(d.getTestClass().getAnnotation(WithPlugins.class), plugins);
                     LOGGER.info("for " + d + " asked to install " + plugins + "; restartRequired? " + restartRequired);
                     if (restartRequired) {
-                        assumeTrue("This test requires a restartable Jenkins", jenkins.canRestart());
-                        jenkins.restart();
+                        assumeTrue("This test requires a restartable Jenkins", jenkinsUtil.canRestart());
+                        jenkinsUtil.restart();
                     }
                     for (String name : plugins) {
                         Plugin installedPlugin = jenkins.getPlugin(name);

@@ -23,6 +23,7 @@
  */
 package plugins;
 
+import javax.inject.Inject;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.SortedMap;
@@ -43,9 +44,11 @@ import org.jenkinsci.test.acceptance.plugins.findbugs.FindBugsPortlet;
 import org.jenkinsci.test.acceptance.plugins.maven.MavenModuleSet;
 import org.jenkinsci.test.acceptance.po.Build;
 import org.jenkinsci.test.acceptance.po.FreeStyleJob;
+import org.jenkinsci.test.acceptance.po.Jenkins;
 import org.jenkinsci.test.acceptance.po.ListView;
 import org.jenkinsci.test.acceptance.po.Node;
 import org.jenkinsci.test.acceptance.po.PageObject;
+import org.jenkinsci.test.acceptance.utils.JenkinsUtil;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
@@ -71,6 +74,9 @@ public class FindBugsPluginTest extends AbstractAnalysisTest<FindBugsAction> {
     private static final String FILE_WITH_6_WARNINGS = "/findbugs_plugin/" + PATTERN_WITH_6_WARNINGS;
     private static final String PLUGIN_ROOT = "/findbugs_plugin/";
     private static final int TOTAL_NUMBER_OF_WARNINGS = 6;
+    
+    @Inject
+    private JenkinsUtil jenkinsUtil;
 
     @Override
     protected FindBugsAction createProjectAction(final FreeStyleJob job) {
@@ -217,8 +223,8 @@ public class FindBugsPluginTest extends AbstractAnalysisTest<FindBugsAction> {
      * pages should then show the same results (see JENKINS-24940).
      */
     @Test @Issue("24940")
-    public void should_report_new_and_fixed_warnings_in_consecutive_builds() {
-        assumeTrue("This test requires a restartable Jenkins", jenkins.canRestart());
+    public void should_report_new_and_fixed_warnings_in_consecutive_builds() throws IOException {
+        assumeTrue("This test requires a restartable Jenkins", jenkinsUtil.canRestart());
         FreeStyleJob job = createFreeStyleJob();
         Build firstBuild = buildJobAndWait(job);
         editJob("/findbugs_plugin/forSecondRun/findbugsXml.xml", false, job);
@@ -232,7 +238,7 @@ public class FindBugsPluginTest extends AbstractAnalysisTest<FindBugsAction> {
         verifyWarningCounts(lastBuild);
 
         firstBuild.delete();
-        jenkins.restart();
+        jenkinsUtil.restart();
         lastBuild.open();
 
         verifyWarningCounts(lastBuild);

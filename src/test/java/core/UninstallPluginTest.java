@@ -29,8 +29,11 @@ import org.jenkinsci.test.acceptance.junit.AbstractJUnitTest;
 import org.jenkinsci.test.acceptance.junit.WithPlugins;
 import org.jenkinsci.test.acceptance.po.Slave;
 import org.jenkinsci.test.acceptance.slave.SlaveController;
+import org.jenkinsci.test.acceptance.utils.JenkinsUtil;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
+
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assume.assumeTrue;
@@ -45,18 +48,21 @@ public class UninstallPluginTest extends AbstractJUnitTest {
     @Inject
     private SlaveController slaves;
 
+    @Inject
+    private JenkinsUtil jenkinsUtil;
+
     /**
      * Scenario: Uninstall a plugin (gerrit-trigger), restart jenkins and verify that the plugin is not installed
      */
     @Test
-    public void gerrit_uninstall_plugin() throws InterruptedException, ExecutionException {
-        assumeTrue("This test requires a restartable Jenkins", jenkins.canRestart());
+    public void gerrit_uninstall_plugin() throws InterruptedException, ExecutionException, IOException {
+        assumeTrue("This test requires a restartable Jenkins", jenkinsUtil.canRestart());
         jenkins.getPluginManager().visit("installed");
         check(find(by.url("plugin/gerrit-trigger")), false);
         WebElement form = find(by.action("plugin/gerrit-trigger/uninstall"));
         WebElement uninstall = form.findElement(by.input("Uninstall"));
         uninstall.click();
-        jenkins.restart();
+        jenkinsUtil.restart();
         Slave s = slaves.install(jenkins).get();
         s.waitUntilOnline();
         jenkins.getPluginManager().visit("installed");

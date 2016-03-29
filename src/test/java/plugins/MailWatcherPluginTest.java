@@ -33,6 +33,7 @@ import org.jenkinsci.test.acceptance.junit.WithPlugins;
 import org.jenkinsci.test.acceptance.plugins.mail_watcher.OnlineStatusNotification;
 import org.jenkinsci.test.acceptance.po.Slave;
 import org.jenkinsci.test.acceptance.slave.SlaveController;
+import org.jenkinsci.test.acceptance.utils.JenkinsUtil;
 import org.jenkinsci.test.acceptance.utils.mail.MailService;
 import org.junit.Test;
 
@@ -49,9 +50,12 @@ public class MailWatcherPluginTest extends AbstractJUnitTest {
     @Inject
     SlaveController slaveController;
 
+    @Inject
+    private JenkinsUtil jenkinsUtil;
+
     @Test
     public void notify_slave_on_restart() throws Exception {
-        assumeTrue("This test requires a restartable Jenkins", jenkins.canRestart());
+        assumeTrue("This test requires a restartable Jenkins", jenkinsUtil.canRestart());
         Future<Slave> futureSlave = slaveController.install(jenkins);
 
         mail.setup(jenkins);
@@ -65,7 +69,7 @@ public class MailWatcherPluginTest extends AbstractJUnitTest {
         }
         slave.save();
 
-        jenkins.restart();
+        jenkinsUtil.restart();
 
         mail.assertMail(regex("Computer %s marked offline", slave.getName()), "on@offline.com");
         mail.assertMail(regex("Computer %s marked online", slave.getName()), "on@online.com");
@@ -73,7 +77,7 @@ public class MailWatcherPluginTest extends AbstractJUnitTest {
 
     @Test @Issue("JENKINS-20538") @Since("1.571") @WithPlugins("mail-watcher-plugin@1.7")
     public void notify_master_on_jenkins_restart() throws Exception {
-        assumeTrue("This test requires a restartable Jenkins", jenkins.canRestart());
+        assumeTrue("This test requires a restartable Jenkins", jenkinsUtil.canRestart());
         mail.setup(jenkins);
 
         jenkins.configure();
@@ -84,7 +88,7 @@ public class MailWatcherPluginTest extends AbstractJUnitTest {
         }
         jenkins.save();
 
-        jenkins.restart();
+        jenkinsUtil.restart();
 
         mail.assertMail(regex("Computer master marked offline"), "on@offline.com", regex("Jenkins is restarting"));
         mail.assertMail(regex("Computer master marked online"), "on@online.com");

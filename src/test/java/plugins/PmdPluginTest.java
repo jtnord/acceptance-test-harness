@@ -1,7 +1,10 @@
 package plugins;
 
+import java.io.IOException;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import javax.inject.Inject;
 
 import org.jenkinsci.test.acceptance.junit.SmokeTest;
 import org.jenkinsci.test.acceptance.junit.WithPlugins;
@@ -15,6 +18,7 @@ import org.jenkinsci.test.acceptance.plugins.pmd.PmdMavenSettings;
 import org.jenkinsci.test.acceptance.plugins.pmd.PmdWarningsPortlet;
 import org.jenkinsci.test.acceptance.po.Build;
 import org.jenkinsci.test.acceptance.po.Build.Result;
+import org.jenkinsci.test.acceptance.utils.JenkinsUtil;
 import org.jenkinsci.test.acceptance.po.FreeStyleJob;
 import org.jenkinsci.test.acceptance.po.Job;
 import org.jenkinsci.test.acceptance.po.ListView;
@@ -47,6 +51,9 @@ public class PmdPluginTest extends AbstractAnalysisTest<PmdAction> {
     private static final String FILE_WITH_9_WARNINGS = PLUGIN_ROOT + PATTERN_WITH_9_WARNINGS;
     private static final int TOTAL_NUMBER_OF_WARNINGS = 9;
 
+    @Inject
+    private JenkinsUtil jenkinsUtil;
+    
     @Override
     protected PmdAction createProjectAction(final FreeStyleJob job) {
         return new PmdAction(job);
@@ -228,8 +235,8 @@ public class PmdPluginTest extends AbstractAnalysisTest<PmdAction> {
      * pages should then show the same results (see JENKINS-24940).
      */
     @Test @Issue("24940")
-    public void should_report_new_and_fixed_warnings_in_consecutive_builds() {
-        assumeTrue("This test requires a restartable Jenkins", jenkins.canRestart());
+    public void should_report_new_and_fixed_warnings_in_consecutive_builds() throws IOException {
+        assumeTrue("This test requires a restartable Jenkins", jenkinsUtil.canRestart());
         FreeStyleJob job = createFreeStyleJob();
         Build firstBuild = buildJobAndWait(job);
         editJob(PLUGIN_ROOT + "forSecondRun/pmd-warnings.xml", false, job);
@@ -243,7 +250,7 @@ public class PmdPluginTest extends AbstractAnalysisTest<PmdAction> {
         verifyWarningCounts(lastBuild);
 
         firstBuild.delete();
-        jenkins.restart();
+        jenkinsUtil.restart();
         lastBuild.open();
 
         verifyWarningCounts(lastBuild);

@@ -43,6 +43,8 @@ import org.jenkinsci.test.acceptance.po.Build;
 import org.jenkinsci.test.acceptance.po.DumbSlave;
 import org.jenkinsci.test.acceptance.po.WorkflowJob;
 import org.jenkinsci.test.acceptance.slave.SlaveController;
+import org.jenkinsci.test.acceptance.utils.JenkinsUtil;
+
 import static org.junit.Assert.*;
 
 import org.junit.Rule;
@@ -60,7 +62,9 @@ public class WorkflowPluginTest extends AbstractJUnitTest {
     @Inject private SlaveController slaveController;
     @Inject DockerContainerHolder<GitContainer> gitServer;
     @Rule public TemporaryFolder tmp = new TemporaryFolder();
-
+    @Inject
+    private JenkinsUtil jenkinsUtil;
+    
     @WithPlugins("workflow-aggregator@1.1")
     @Test public void helloWorld() throws Exception {
         WorkflowJob job = jenkins.jobs.create(WorkflowJob.class);
@@ -72,7 +76,7 @@ public class WorkflowPluginTest extends AbstractJUnitTest {
 
     @WithPlugins({"workflow-aggregator@1.1", "junit@1.3", "git@2.3"})
     @Test public void linearFlow() throws Exception {
-        assumeTrue("This test requires a restartable Jenkins", jenkins.canRestart());
+        assumeTrue("This test requires a restartable Jenkins", jenkinsUtil.canRestart());
         MavenInstallation.installMaven(jenkins, "M3", "3.1.0");
         final DumbSlave slave = (DumbSlave) slaveController.install(jenkins).get();
         slave.configure(new Callable<Void>() {
@@ -113,7 +117,7 @@ public class WorkflowPluginTest extends AbstractJUnitTest {
             }
         });
         build.shouldContainsConsoleOutput("Building version 1.0-SNAPSHOT");
-        jenkins.restart();
+        jenkinsUtil.restart();
         visit(build.getConsoleUrl());
         clickLink("Proceed");
         // Default 120s timeout of Build.waitUntilFinished sometimes expires waiting for RetentionStrategy.Always to tick (after initial failure of CommandLauncher.launch: EOFException: unexpected stream termination):

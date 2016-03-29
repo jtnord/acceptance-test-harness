@@ -29,6 +29,7 @@ import static org.hamcrest.Matchers.not;
 import static org.jenkinsci.test.acceptance.Matchers.*;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
@@ -51,6 +52,7 @@ import org.jenkinsci.test.acceptance.po.MatrixProject;
 import org.jenkinsci.test.acceptance.po.MatrixRun;
 import org.jenkinsci.test.acceptance.po.Node;
 import org.jenkinsci.test.acceptance.po.Slave;
+import org.jenkinsci.test.acceptance.utils.JenkinsUtil;
 import org.junit.After;
 import org.junit.Test;
 import org.jvnet.hudson.test.Issue;
@@ -86,6 +88,9 @@ public class OpenstackCloudPluginTest extends AbstractJUnitTest {
 
     @Inject(optional = true) @Named("OpenstackCloudPluginTest.KEY_PAIR_NAME")
     public String KEY_PAIR_NAME;
+
+    @Inject
+    private JenkinsUtil jenkinsUtil;
 
     @After
     public void tearDown() {
@@ -207,8 +212,8 @@ public class OpenstackCloudPluginTest extends AbstractJUnitTest {
     @Test
     @WithCredentials(credentialType = WithCredentials.USERNAME_PASSWORD, values = {MACHINE_USERNAME, "ath"})
     @TestActivation({"HARDWARE_ID", "IMAGE_ID", "KEY_PAIR_NAME"})
-    public void sshSlaveShouldSurviveRestart() {
-        assumeTrue("This test requires a restartable Jenkins", jenkins.canRestart());
+    public void sshSlaveShouldSurviveRestart() throws IOException {
+        assumeTrue("This test requires a restartable Jenkins", jenkinsUtil.canRestart());
         configureCloudInit("cloud-init");
         configureProvisioning("SSH", "label");
 
@@ -219,7 +224,7 @@ public class OpenstackCloudPluginTest extends AbstractJUnitTest {
         job.save();
         Node created = job.scheduleBuild().waitUntilFinished(PROVISIONING_TIMEOUT).shouldSucceed().getNode();
 
-        jenkins.restart();
+        jenkinsUtil.restart();
 
         Node reconnected = job.scheduleBuild().waitUntilFinished(PROVISIONING_TIMEOUT).shouldSucceed().getNode();
 

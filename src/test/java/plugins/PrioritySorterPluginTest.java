@@ -13,6 +13,7 @@ import org.jenkinsci.test.acceptance.po.JenkinsConfig;
 import org.jenkinsci.test.acceptance.po.ListView;
 import org.jenkinsci.test.acceptance.po.Slave;
 import org.jenkinsci.test.acceptance.slave.SlaveController;
+import org.jenkinsci.test.acceptance.utils.JenkinsUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,12 +33,15 @@ public class PrioritySorterPluginTest extends AbstractJUnitTest {
     @Inject
     private SlaveController slaves;
 
+    @Inject
+    private JenkinsUtil jenkinsUtil;
+
     private Slave slave;
 
     @Before
     public void setUp() throws Exception {
-        assumeTrue("This test requires a restartable Jenkins", jenkins.canRestart());
-        jenkins.restart(); // Priority sorter plugin needs this
+        assumeTrue("This test requires a restartable Jenkins", jenkinsUtil.canRestart());
+        jenkinsUtil.restart(); // Priority sorter plugin needs this
         slave = slaves.install(jenkins).get();
     }
 
