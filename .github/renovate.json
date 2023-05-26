@@ -24,7 +24,7 @@
   ],
   "regexManagers": [
     {
-      "fileMatch": ["src/main/java/org/jenkinsci/test/acceptance/FallbackConfig\\.java"],
+      "fileMatch": ["(^|/|\\.)FallbackConfig\\.java$"],
       "matchStrings": ["selenium/standalone-firefox:(?<currentValue>.*?)\""],
       "depNameTemplate": "org.seleniumhq.selenium:selenium-java",
       "datasourceTemplate": "maven"
