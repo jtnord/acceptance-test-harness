@@ -24,13 +24,13 @@
   ],
   "regexManagers": [
     {
-      "fileMatch": [".*FallbackConfig.*"],
+      "fileMatch": ["src/main/resources/ath-container/Dockerfile"],
       "matchStrings": ["selenium/standalone-firefox:(?<currentValue>.*?)\""],
       "depNameTemplate": "org.seleniumhq.selenium:selenium-java",
       "datasourceTemplate": "maven"
     },
     {
-      "fileMatch": [".*/FallbackConfig.java"],
+      "fileMatch": ["src/main/resources/ath-container/Dockerfile"],
       "matchStrings": ["selenium/standalone-chrome:(?<currentValue>4[.]6[.]0)\""],
       "depNameTemplate": "org.seleniumhq.selenium:selenium-java",
       "datasourceTemplate": "maven"
