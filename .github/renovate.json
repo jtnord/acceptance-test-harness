@@ -49,7 +49,7 @@
     },
     {
       "fileMatch": ["src/main/java/org/jenkinsci/test/acceptance/FallbackConfig.java"],
-      "matchStrings": ["elenium/standalone-chrome:(?<currentValue>[^\"]*)"],
+      "matchStrings": ["selenium/standalone-chrome:(?<currentValue>[^\"]*)"],
       "depNameTemplate": "selenium/standalone-chrome",
       "datasourceTemplate": "docker"
     }
