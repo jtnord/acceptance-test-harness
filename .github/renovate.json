@@ -40,6 +40,11 @@
       "matchStrings": ["DOCKER_VERSION=(?<currentValue>.*?)\n"],
       "depNameTemplate": "docker",
       "datasourceTemplate": "docker"
+    },
+    {
+      "fileMatch": ["src/main/java/org/jenkinsci/test/acceptance/FallbackConfig.java"],
+      "matchStrings": ["createContainerWebDriver\\([\\S]+, \"(?<depName>[^:]+):(?<currentValue>[^\"]+)\""],
+      "datasourceTemplate": "docker"
     }
   ],
   "rebaseWhen": "conflicted"
