@@ -24,7 +24,7 @@
   ],
   "regexManagers": [
     {
-      "fileMatch": ["src/main/resources/ath-container/Dockerfile"],
+      "fileMatch": ["FallbackConfig"],
       "matchStrings": ["selenium/standalone-firefox:(?<currentValue>.*?)\""],
       "depNameTemplate": "org.seleniumhq.selenium:selenium-java",
       "datasourceTemplate": "maven"
