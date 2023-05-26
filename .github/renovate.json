@@ -5,6 +5,8 @@
     ":semanticCommitsDisabled",
     "schedule:earlyMondays"
   ],
+  "ignorePaths": [
+  ],
   "ignoreDeps": [
     "org.apache.maven:maven-resolver-provider",
     "org.apache.maven:maven-settings-builder",
@@ -30,8 +32,14 @@
       "datasourceTemplate": "maven"
     },
     {
-      "fileMatch": ["(^|/)/FallbackConfig\\.java$"],
+      "fileMatch": ["FallbackConfig.java$"],
       "matchStrings": ["selenium/standalone-firefox:(?<currentValue>.*?)\""],
+      "depNameTemplate": "org.seleniumhq.selenium:selenium-java",
+      "datasourceTemplate": "maven"
+    },
+    {
+      "fileMatch": ["src/main/java/org/jenkinsci/test/acceptance/FallbackConfig.*"],
+      "matchStrings": ["selenium/standalone-chrome:(?<currentValue>4[.]6[.]0)\""],
       "depNameTemplate": "org.seleniumhq.selenium:selenium-java",
       "datasourceTemplate": "maven"
     },
