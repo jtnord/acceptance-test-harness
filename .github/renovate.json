@@ -6,7 +6,8 @@
     "schedule:earlyMondays"
   ],
   "ignorePaths": [
-    "src/test/**/Dockerfile"
+    "src/test/**",
+    "src/main/resources/**/Dockerfile"
   ],
   "ignoreDeps": [
     "org.apache.maven:maven-resolver-provider",
