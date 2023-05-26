@@ -24,24 +24,6 @@
   ],
   "regexManagers": [
     {
-      "fileMatch": ["src/main/resources/ath-container/Dockerfile"],
-      "matchStrings": ["ENV GECKODRIVER_VERSION=(?<currentValue>.*?)\n"],
-      "depNameTemplate": "mozilla/geckodriver",
-      "datasourceTemplate": "github-releases"
-    },
-    {
-      "fileMatch": ["src/main/resources/ath-container/Dockerfile"],
-      "matchStrings": ["ENV MAVEN_VERSION=(?<currentValue>.*?)\n"],
-      "depNameTemplate": "org.apache.maven:maven-core",
-      "datasourceTemplate": "maven"
-    },
-    {
-      "fileMatch": ["src/main/resources/ath-container/Dockerfile"],
-      "matchStrings": ["DOCKER_VERSION=(?<currentValue>.*?)\n"],
-      "depNameTemplate": "docker",
-      "datasourceTemplate": "docker"
-    },
-    {
       "fileMatch": ["src/main/java/org/jenkinsci/test/acceptance/FallbackConfig.java"],
       "matchStrings": ["\"selenium/standalone-firefox:(?<currentValue>[^\"]+)\""],
       "depNameTemplate": "selenium/standalone-firefox",
