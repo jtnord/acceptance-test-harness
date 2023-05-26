@@ -36,7 +36,7 @@
       "datasourceTemplate": "maven"
     },
     {
-      "fileMatch": ["src/main/java/org/jenkinsci/test/acceptance/FallbackConfig\\.java"],
+      "fileMatch": ["src/main/java/org/jenkinsci/test/acceptance/FallbackConfig.*"],
       "matchStrings": ["selenium/standalone-chrome:(?<currentValue>4[.]6[.]0)\""],
       "depNameTemplate": "org.seleniumhq.selenium:selenium-java",
       "datasourceTemplate": "maven"
