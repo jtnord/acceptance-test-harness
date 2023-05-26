@@ -6,7 +6,6 @@
     "schedule:earlyMondays"
   ],
   "ignorePaths": [
-    "src/test/**",
     "src/main/resources/**/Dockerfile"
   ],
   "ignoreDeps": [
