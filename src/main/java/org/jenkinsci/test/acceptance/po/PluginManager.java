@@ -236,7 +236,12 @@ public class PluginManager extends ContainerPageObject {
                 }
             }
 
-            clickButton("Install");
+            // the install button gets enabled by javascript after a plguin is selcted so we need to wait for it to be enabled.
+            WebElement e = find(by.button("Install"));
+            waitFor(e).until(WebElement::isEnabled); 
+            e.click();
+            // wait for the form submission to have kicked in so it is not lost before switching pages
+            waitFor(e).until(Control::isStale);
 
             // Plugins that are already installed in older version will be updated
             System.out.println("Plugins to be updated: " + update);

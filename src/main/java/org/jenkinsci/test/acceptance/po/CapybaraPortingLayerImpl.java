@@ -95,6 +95,7 @@ public class CapybaraPortingLayerImpl implements CapybaraPortingLayer {
     @Override
     public void clickButton(String text) {
         WebElement e = find(by.button(text));
+        assert e.isEnabled() : "Attempted to click a button ("+text+") but that button is disabled";
         e.click();
     }
 
